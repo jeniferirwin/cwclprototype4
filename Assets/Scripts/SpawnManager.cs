@@ -117,7 +117,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
             // The following lines pick a random spot in the middling area of the
             // platform
             float _xPos = Random.Range(-8f, 8f);
-            float _yPos = 0.1f; // this puts our spheres juuuust above the platform
+            float _yPos = 15f;
             float _zPos = Random.Range(-5f, 5f);
             bool telefragging = false;
 
