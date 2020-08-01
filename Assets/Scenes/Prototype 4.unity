@@ -518,8 +518,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82233436deb9f4240945c760ec9d8405, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectPrefabs: []
-  initObjectAmount: 0
+  objectPrefabs:
+  - {fileID: 8989595047101920232, guid: cfc3a5ef2e35c4d4faccc2ad56446fbb, type: 3}
+  - {fileID: 6520021448541083370, guid: e87cf981a6524cd47bda02e965b8592e, type: 3}
+  - {fileID: 8171109839141245236, guid: e90949932c518d64d9a549ef8dc010c7, type: 3}
+  initObjectAmount: 10
 --- !u!1 &1211016355
 GameObject:
   m_ObjectHideFlags: 0
@@ -841,95 +844,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1403545340}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1454898538
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 135134, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_Name
-      value: FireIcon
-      objectReference: {fileID: 0}
-    - target: {fileID: 432894, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 432894, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 432894, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 432894, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 432894, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 432894, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 432894, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 432894, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 432894, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 432894, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 432894, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 18d064e59e399ac4ebf74eada94947af, type: 3}
---- !u!1 &1454898539 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 135134, guid: 18d064e59e399ac4ebf74eada94947af,
-    type: 3}
-  m_PrefabInstance: {fileID: 1454898538}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1454898540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1454898539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d2e7d354f38f524492f7f6be8704485, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerupType: 3
---- !u!65 &1454898541
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1454898539}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.891613, y: 1.3382554, z: 0.20007595}
-  m_Center: {x: -0.0000018924475, y: 0, z: 0.000000011175871}
 --- !u!4 &1471930970 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5831814716121893815, guid: 363a8f737719f4d2eafb35f885f3706f,
