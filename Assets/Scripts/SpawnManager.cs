@@ -39,6 +39,13 @@ public class SpawnManager : MonoSingleton<SpawnManager>
     {
         IncreasePool(GameManager.TAG_ENEMY,initEnemyPoolAmount,true);
         IncreasePool(GameManager.TAG_POWERUP,initPowerupPoolAmount,true);
+        StartCoroutine("TestPowerups");
+    }
+
+    private IEnumerator TestPowerups()
+    {
+        yield return new WaitForSeconds(2);
+        
     }
 
     /// <summary>

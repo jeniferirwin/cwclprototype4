@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -17,10 +18,20 @@ public class GameManager : MonoSingleton<GameManager>
     public int Score;
     public static GameObject Player;
 
+    public static int PowerupTypesTotal = Enum.GetValues(typeof(PowerupTypes)).Length;
+
     // TODO: Later we will subscribe to enemy despawn events.
 
     private void Start()
     {
         Player = GameObject.FindGameObjectWithTag(TAG_PLAYER);
+    }
+
+    public enum PowerupTypes
+    {
+        NONE,
+        STRENGTH,
+        MOBILITY,
+        NOVA
     }
 }
