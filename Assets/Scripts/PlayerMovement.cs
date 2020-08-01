@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
-        if (currentPowerup.powerupType == Powerup.PowerupTypes.MOBILITY)
+        if (currentPowerup != null && currentPowerup.powerupType == Powerup.PowerupTypes.MOBILITY)
         {
             // move at 150% speed if we're affected by mobility powerup
             playerRb.AddForce(focalPoint.transform.forward * moveSpeed * PlayerInput.verticalInput * 1.5f, ForceMode.Acceleration);
