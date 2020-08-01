@@ -3,56 +3,119 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// SpawnManager creates and holds a pool of reusable enemy GameObjects.
+/// SpawnManager creates and holds pools of reusable enemy and powerup
+/// GameObjects.
 /// </summary>
 public class SpawnManager : MonoSingleton<SpawnManager>
 {
     // mobileContainer is an empty GameObject that we parent all of the
     // enemies to.
+    //
+    // powerupContainer is an empty GameObject that we parent all of the
+    // powerups to.
     public GameObject mobileContainer;
-    public GameObject enemyPrefab;
-    public int initPoolAmount;
+    public GameObject powerupContainer;
+    public GameObject[] enemyPrefabs;
+    public GameObject[] powerupPrefabs;
+    public int initEnemyPoolAmount;
+    public int initPowerupPoolAmount;
     private List<GameObject> enemyPool = new List<GameObject>();
-    private Quaternion startingRotation;
+    private List<GameObject> powerupPool = new List<GameObject>();
+    private Quaternion startingEnemyRotation;
+    private Quaternion startingPowerupRotation;
 
     // TODO: Might use this event for changing how powerups are spawned during runtime
     public delegate void EnemySpawnedEvent();
     public static event EnemySpawnedEvent EnemySpawned;
+    
+    public delegate void PowerupSpawnedEvent();
+    public static event PowerupSpawnedEvent PowerupSpawned;
 
     /// <summary>
-    /// Initialize the enemy pool and set all of them inactive
+    /// Initialize the pools and set all of the resulting objects inactive
     /// to start with.
     /// </summary>
     void Start()
     {
-        startingRotation = enemyPrefab.transform.rotation;
-        IncreaseEnemyPool(initPoolAmount,true);
-        Debug.Log("Pool count: " + enemyPool.Count);
-        StartCoroutine("TestSpawnPoints");
+        IncreasePool(GameManager.TAG_ENEMY,initEnemyPoolAmount,true);
+        IncreasePool(GameManager.TAG_POWERUP,initPowerupPoolAmount,true);
     }
 
-    IEnumerator TestSpawnPoints()
-    {
-        do
-        {
-            SpawnEnemy();
-            yield return new WaitForSeconds(3);
-        } while (true);
-    }
     /// <summary>
-    /// Create [amount] new enemies and add them to the pool.
+    /// Create <amount> new entities associated with tag <tag> and add
+    /// them to the appropriate pool.
     /// </summary>
-    /// <param name="amount"></param>
-    /// <param name="autoDisable">Whether or not to start the new enemy in disabled mode or not.</param>
-    private void IncreaseEnemyPool(int amount, bool autoDisable)
+    /// <param name="tag">The tag of the object type for the pool.</param>
+    /// <param name="amount">The number of new objects to generate for the pool.</param>
+    /// <param name="Disable">Whether to auto-disable the object upon creation.</param>
+    private void IncreasePool(string tag, int amount, bool autoDisable)
     {
+        // this is kind of hacky, but it's the best way I can think of
+        // to accomplish this right now.
+        //
+        // In order to help IncreasePool know what prefabs, containers and
+        // objects to use, we derive these values from tag.
+
+        GameObject[] _entityPrefabs = PrefabsFromTag(tag);
+        GameObject _entityContainer = ContainerFromTag(tag);
+        List<GameObject> _entityPool = PoolFromTag(tag);
+
         for (int i = 0; i < amount; i++)
         {
-            GameObject _newEnemy = Instantiate(enemyPrefab, Vector3.zero, startingRotation, mobileContainer.transform);
-            enemyPool.Add(_newEnemy);
+            GameObject _selectedPrefab = _entityPrefabs[Random.Range(0,_entityPrefabs.Length)];
+            Quaternion _startingRotation = _selectedPrefab.transform.rotation;
+            GameObject _newEntity = Instantiate(_selectedPrefab, Vector3.zero, _startingRotation, _entityContainer.transform);
+            _entityPool.Add(_newEntity);
             if (autoDisable)
-                _newEnemy.SetActive(false);
+                _newEntity.SetActive(false);
         }
+    }
+
+    //TODO: Can we make the following three functions somehow compressed into one while retaining clarity?
+
+    private List<GameObject> PoolFromTag(string tag)
+    {
+        switch (tag)
+        {
+            case GameManager.TAG_ENEMY:
+                return enemyPool;
+            case GameManager.TAG_POWERUP:
+                return powerupPool;
+            default:
+                Debug.LogError("Can't find a prefab list matching tag: " + tag);
+                break;
+        }
+        return null;
+    }
+
+    private GameObject[] PrefabsFromTag(string tag)
+    {
+        switch (tag)
+        {
+            case GameManager.TAG_ENEMY:
+                return enemyPrefabs;
+            case GameManager.TAG_POWERUP:
+                return powerupPrefabs;
+            default:
+                Debug.LogError("Can't find a prefab list matching tag: " + tag);
+                break;
+        }
+        return null;
+    }
+
+    private GameObject ContainerFromTag(string tag)
+    {
+        switch (tag)
+        {
+            case GameManager.TAG_ENEMY:
+                return mobileContainer;
+            case GameManager.TAG_POWERUP:
+                return powerupContainer;
+            default:
+                Debug.LogError("Can't find a prefab list matching tag: " + tag);
+                break;
+        }
+        return null;
     }
 
     private GameObject GetInactiveEnemy()
@@ -64,7 +127,10 @@ public class SpawnManager : MonoSingleton<SpawnManager>
             {
                 _enemy.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 _enemy.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-                _enemy.transform.rotation = enemyPrefab.transform.rotation;
+
+                // TODO: The [0] here is a dirty hack. Need to think of a better way.
+
+                _enemy.transform.rotation = enemyPrefabs[0].transform.rotation;
                 return _enemy;
             }
         }
@@ -116,20 +182,27 @@ public class SpawnManager : MonoSingleton<SpawnManager>
             // TODO: Make the below not hardcoded.
             // The following lines pick a random spot in the middling area of the
             // platform
-            float _xPos = Random.Range(-8f, 8f);
-            float _yPos = 15f;
-            float _zPos = Random.Range(-5f, 5f);
+            float _tryXPos = Random.Range(-8f, 8f);
+            float _tryYPos = 15f;
+            float _tryZPos = Random.Range(-5f, 5f);
+
+            // but what if we're spawning inside another entity? we don't want
+            // that, so let's set up to pick another vector if so
             bool telefragging = false;
 
-            foreach (Vector3 _pos in _enemyPositions)
+            foreach (Vector3 _existingEnemyPos in _enemyPositions)
             {
-                if (Mathf.Abs(_pos.x - _xPos) <= _minXDistance || Mathf.Abs(_pos.z - _zPos) <= _minZDistance)
+                // diffX and diffZ are the difference between an existing enemy
+                // position and our potential spawn position. if either of these
+                // are less than the minimum distances declared up there before
+                // our do loop, then we're telefragging and will generate
+                // another vector.
+
+                float _diffX = Mathf.Abs(_existingEnemyPos.x - _tryXPos);
+                float _diffZ = Mathf.Abs(_existingEnemyPos.z - _tryZPos);
+
+                if (_diffX <= _minXDistance || _diffZ <= _minZDistance)
                 {
-                    /**
-                    Debug.Log(string.Format("{0}x - {1}x = ABS {2}x",_pos.x, _xPos, Mathf.Abs(_pos.x - _xPos)));
-                    Debug.Log(string.Format("{0}z - {1}z = ABS {2}z",_pos.z, _zPos, Mathf.Abs(_pos.z - _zPos)));
-                    Debug.Log("We are telefragging.");
-                    **/
                     telefragging = true;
                     break;
                 }
@@ -138,10 +211,15 @@ public class SpawnManager : MonoSingleton<SpawnManager>
             // if we've made it this far without activating telefragging, that
             // means we have a valid position to spawn in and can return it
             if (!telefragging)
-                return new Vector3(_xPos, _yPos, _zPos);
+                return new Vector3(_tryXPos, _tryYPos, _tryZPos);
 
             maxTries--;
         } while (maxTries > 0);
+
+        // if we've tried 1000 times to keep from telefragging and it's
+        // not working, we'll return Vector3.zero. the calling function
+        // should preferably be aware that this needs to be handled in
+        // some other way
         return Vector3.zero;
     }
 

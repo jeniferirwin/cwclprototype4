@@ -27,9 +27,6 @@ public class FollowPlayer : MonoBehaviour
 
         if (transform.position.y < -25)
         {
-            enemyRb.velocity = Vector3.zero;
-            enemyRb.angularVelocity = Vector3.zero;
-            transform.rotation = SpawnManager.Instance.enemyPrefab.transform.rotation;
             gameObject.SetActive(false);
             EnemyDespawned?.Invoke();
         }
