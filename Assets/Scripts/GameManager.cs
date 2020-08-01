@@ -18,8 +18,6 @@ public class GameManager : MonoSingleton<GameManager>
     public int Score;
     public static GameObject Player;
 
-    public static int PowerupTypesTotal = Enum.GetValues(typeof(PowerupTypes)).Length;
-
     // TODO: Later we will subscribe to enemy despawn events.
 
     private void Start()
@@ -27,11 +25,4 @@ public class GameManager : MonoSingleton<GameManager>
         Player = GameObject.FindGameObjectWithTag(TAG_PLAYER);
     }
 
-    public enum PowerupTypes
-    {
-        NONE,
-        STRENGTH,
-        MOBILITY,
-        NOVA
-    }
 }

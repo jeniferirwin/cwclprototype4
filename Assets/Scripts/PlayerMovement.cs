@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody playerRb;
     private GameObject focalPoint;
 
-    private GameManager.PowerupTypes powerupAffected;
+    public Powerup currentPowerup;
 
     public delegate void CollectedPowerupEvent();
     public static event CollectedPowerupEvent CollectedPowerup;
@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        powerupAffected = GameManager.PowerupTypes.NONE;
+        currentPowerup = null;
         playerRb = GetComponent<Rigidbody>();
         focalPoint = GameObject.FindGameObjectWithTag(GameManager.TAG_FOCALPOINT);
     }
@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
-        if (powerupAffected == GameManager.PowerupTypes.MOBILITY)
+        if (currentPowerup.powerupType == Powerup.PowerupTypes.MOBILITY)
         {
             // move at 150% speed if we're affected by mobility powerup
             playerRb.AddForce(focalPoint.transform.forward * moveSpeed * PlayerInput.verticalInput * 1.5f, ForceMode.Acceleration);
@@ -50,10 +50,7 @@ public class PlayerMovement : MonoBehaviour
             // learn what the powerup type of the powerup is, then apply it to ourselves
             // and raise the event that indicates we received it - then deactivate the
             // powerup object
-            GameManager.PowerupTypes _powerupType = other.gameObject.GetComponent<Powerup>().powerupType;
-            powerupAffected = _powerupType;
             CollectedPowerup?.Invoke();
-            Debug.Log("Gained powerup: " + _powerupType);
             other.gameObject.SetActive(false);
         }
     }
